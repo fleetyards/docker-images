@@ -15,10 +15,6 @@ defaultSteps: &defaultSteps
   - checkout
   - run: |
       echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-  - run: |
-      cd ./$IMAGE_NAME
-      docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
-  - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
 
 jobs:
   base-image:
@@ -27,9 +23,13 @@ jobs:
       <<: *environmentDefaults
       IMAGE_NAME: base
     steps:
+      <<: *defaultSteps
       - run: |
           export IMAGE_TAG=$RUBY_VERSION
-      <<: *defaultSteps
+      - run: |
+          cd ./$IMAGE_NAME
+          docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
+      - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
 
   ci-image:
     <<: *defaults
@@ -37,9 +37,13 @@ jobs:
       <<: *environmentDefaults
       IMAGE_NAME: ci
     steps:
+      <<: *defaultSteps
       - run: |
           export IMAGE_TAG=$RUBY_VERSION
-      <<: *defaultSteps
+      - run: |
+          cd ./$IMAGE_NAME
+          docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
+      - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
 
   health-image:
     <<: *defaults
@@ -49,6 +53,10 @@ jobs:
       IMAGE_NAME: health
     steps:
       <<: *defaultSteps
+      - run: |
+          cd ./$IMAGE_NAME
+          docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
+      - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
 
 workflows:
   version: 2
