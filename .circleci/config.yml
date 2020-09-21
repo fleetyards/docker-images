@@ -43,5 +43,5 @@ workflows:
       - base-image
       - ci-image:
           requires:
-            - base image
+            - base-image
       - health-image
