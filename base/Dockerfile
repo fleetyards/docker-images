@@ -4,9 +4,9 @@ FROM ruby:$RUBY_VERSION
 
 ARG BUNDLER_VERSION
 
-RUN curl -sL https://deb.nodesource.com/setup_current.x | bash - \
-    && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+RUN curl https://deb.nodesource.com/setup_current.x | bash - \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
 ## install main deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb bzip2 libssl-dev unzip \
     && apt-get clean \
     && rm -rf /tmp/* /var/lib/apt/lists/*
+
+RUN npm install -g npm@6.9.0
 
 ## install bundler
 RUN gem update --system
