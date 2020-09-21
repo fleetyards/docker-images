@@ -4,10 +4,11 @@ services:
   - docker:18-dind
 
 stages:
+  - setup
   - build
 
 .docker_build_template:
-  stage: build
+  stage: setup
   script:
     - cd $IMAGE_NAME
     - docker build -t $IMAGE .
@@ -33,6 +34,7 @@ base image:
 
 ci image:
   extends: .docker_build_template
+  stage: build
   variables:
     IMAGE_TAG: $RUBY_VERSION
     IMAGE_NAME: ci
