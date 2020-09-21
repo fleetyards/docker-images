@@ -10,6 +10,20 @@ defaults: &defaults
   docker:
     - image: cimg/base:2020.01
 
+aliases:
+  - &docker_login
+      run: |
+        echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+  - &set_image_tag_for_ruby_version
+      run: |
+        echo "export IMAGE_TAG=$RUBY_VERSION" >> $BASH_ENV
+  - &docker_build
+      run: |
+        cd ./$IMAGE_NAME
+        docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
+  - &docker_push
+      run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
+
 jobs:
   base-image:
     <<: *defaults
@@ -19,14 +33,10 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
-      - run: |
-          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-      - run: |
-          export IMAGE_TAG=$RUBY_VERSION
-      - run: |
-          cd ./$IMAGE_NAME
-          docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
-      - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
+      - *docker_login
+      - *set_image_tag_for_ruby_version
+      - *docker_build
+      - *docker_push
 
   ci-image:
     <<: *defaults
@@ -36,14 +46,10 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
-      - run: |
-          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-      - run: |
-          export IMAGE_TAG=$RUBY_VERSION
-      - run: |
-          cd ./$IMAGE_NAME
-          docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
-      - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
+      - *docker_login
+      - *set_image_tag_for_ruby_version
+      - *docker_build
+      - *docker_push
 
   health-image:
     <<: *defaults
@@ -54,12 +60,9 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
-      - run: |
-          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-      - run: |
-          cd ./$IMAGE_NAME
-          docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
-      - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
+      - *docker_login
+      - *docker_build
+      - *docker_push
 
 workflows:
   version: 2
