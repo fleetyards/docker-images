@@ -13,8 +13,6 @@ aliases:
   - &docker_login
       run: |
         echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-  - &docker_push
-      run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
 
 jobs:
   base-image:
@@ -26,7 +24,7 @@ jobs:
       - run: |
           cd base
           docker build -t $PROJECT_NAME/base:$RUBY_VERSION --build-arg RUBY_VERSION .
-      - *docker_push
+      - run: docker push $PROJECT_NAME/base:$RUBY_VERSION
 
   ci-image:
     <<: *defaults
@@ -37,7 +35,7 @@ jobs:
       - run: |
           cd ci
           docker build -t $PROJECT_NAME/ci:$RUBY_VERSION --build-arg RUBY_VERSION --build-arg BUNDLER_VERSION --build-arg YARN_VERSION .
-      - *docker_push
+      - run: docker push $PROJECT_NAME/ci:$RUBY_VERSION
 
   health-image:
     <<: *defaults
@@ -48,7 +46,7 @@ jobs:
       - run: |
           cd health
           docker build -t $PROJECT_NAME/health:latest .
-      - *docker_push
+      - run: docker push $PROJECT_NAME/health:latest
 
 workflows:
   version: 2
