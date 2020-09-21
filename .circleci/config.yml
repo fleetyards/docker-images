@@ -41,6 +41,6 @@ workflows:
     jobs:
       - base image
       - ci image:
-        requires:
-          - base image
+          requires:
+            - base image
       - health image
