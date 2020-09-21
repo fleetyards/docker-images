@@ -5,7 +5,7 @@ FROM ruby:$RUBY_VERSION
 ARG BUNDLER_VERSION
 ARG YARN_VERSION
 
-RUN curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_current.x | bash -
 
 ## install main deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
