@@ -1,0 +1,44 @@
+version: 2.1
+
+defaults: &defaults
+  environment:
+    RUBY_VERSION: 2.7.1
+    BUNDLER_VERSION: 2.1.4
+    YARN_VERSION: 1.22.5
+    IMAGE: fleetyards/$IMAGE_NAME:$IMAGE_TAG
+  machine: true
+  steps:
+    - checkout
+    - run: |
+      docker info
+      docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - run: |
+        cd ./$IMAGE_NAME
+        docker build -t $IMAGE .
+    - run: docker push $IMAGE
+
+jobs:
+  base image:
+    <<: *defaults
+    environment:
+      IMAGE_TAG: $RUBY_VERSION
+      IMAGE_NAME: base
+
+  ci image:
+    <<: *defaults
+    environment:
+      IMAGE_TAG: $RUBY_VERSION
+      IMAGE_NAME: ci
+
+  health image:
+    <<: *defaults
+    environment:
+      IMAGE_TAG: latest
+      IMAGE_NAME: health
+
+workflows:
+  build_and_push:
+    jobs:
+      - base image
+      - ci image
+      - health image
