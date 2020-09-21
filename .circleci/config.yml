@@ -1,4 +1,4 @@
-version: 2.0
+version: 2.1
 
 defaults: &defaults
   environment:
@@ -6,12 +6,13 @@ defaults: &defaults
     BUNDLER_VERSION: 2.1.4
     YARN_VERSION: 1.22.5
     IMAGE: fleetyards/$IMAGE_NAME:$IMAGE_TAG
-  machine: true
+  docker:
+    - image: cimg/base:2020.01
   steps:
+    - setup_remote_docker
     - checkout
     - run: |
-        docker info
-        docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+        echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USER --password-stdin
     - run: |
         cd ./$IMAGE_NAME
         docker build -t $IMAGE .
