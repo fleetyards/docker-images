@@ -13,7 +13,7 @@ defaults: &defaults
     - checkout
     - run: |
         docker info
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD registry-1.docker.io
+        echo $DOCKER_PASSWORD | docker login --username $DOCKER_USER registry-1.docker.io --password-stdin
     - run: |
         cd ./$IMAGE_NAME
         docker build -t $IMAGE .
