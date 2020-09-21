@@ -18,29 +18,30 @@ defaults: &defaults
     - run: docker push $IMAGE
 
 jobs:
-  base image:
+  base-image:
     <<: *defaults
     environment:
       IMAGE_TAG: $RUBY_VERSION
       IMAGE_NAME: base
 
-  ci image:
+  ci-image:
     <<: *defaults
     environment:
       IMAGE_TAG: $RUBY_VERSION
       IMAGE_NAME: ci
 
-  health image:
+  health-image:
     <<: *defaults
     environment:
       IMAGE_TAG: latest
       IMAGE_NAME: health
 
 workflows:
-  build_and_push:
+  version: 2
+  main:
     jobs:
-      - base image
-      - ci image:
+      - base-image
+      - ci-image:
           requires:
             - base image
-      - health image
+      - health-image
