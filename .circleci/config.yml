@@ -4,7 +4,7 @@ environmentDefaults: &environmentDefaults
   RUBY_VERSION: 2.7.1
   BUNDLER_VERSION: 2.1.4
   YARN_VERSION: 1.22.5
-  IMAGE: fleetyards/$IMAGE_NAME:$IMAGE_TAG
+  PROJECT_NAME: fleetyards
 
 defaults: &defaults
   docker:
@@ -16,8 +16,8 @@ defaults: &defaults
         echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
     - run: |
         cd ./$IMAGE_NAME
-        docker build -t $IMAGE .
-    - run: docker push $IMAGE
+        docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
+    - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
 
 jobs:
   base-image:
