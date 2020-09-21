@@ -1,11 +1,12 @@
 version: 2.1
 
+environmentDefaults: &environmentDefaults
+  RUBY_VERSION: 2.7.1
+  BUNDLER_VERSION: 2.1.4
+  YARN_VERSION: 1.22.5
+  IMAGE: fleetyards/$IMAGE_NAME:$IMAGE_TAG
+
 defaults: &defaults
-  environment:
-    RUBY_VERSION: 2.7.1
-    BUNDLER_VERSION: 2.1.4
-    YARN_VERSION: 1.22.5
-    IMAGE: fleetyards/$IMAGE_NAME:$IMAGE_TAG
   docker:
     - image: cimg/base:2020.01
   steps:
@@ -22,18 +23,21 @@ jobs:
   base-image:
     <<: *defaults
     environment:
+      <<: *environmentDefaults
       IMAGE_TAG: $RUBY_VERSION
       IMAGE_NAME: base
 
   ci-image:
     <<: *defaults
     environment:
+      <<: *environmentDefaults
       IMAGE_TAG: $RUBY_VERSION
       IMAGE_NAME: ci
 
   health-image:
     <<: *defaults
     environment:
+      <<: *environmentDefaults
       IMAGE_TAG: latest
       IMAGE_NAME: health
 
