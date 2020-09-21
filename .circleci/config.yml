@@ -19,8 +19,6 @@ aliases:
 jobs:
   base-image:
     <<: *defaults
-    environment:
-      <<: *environmentDefaults
     steps:
       - setup_remote_docker
       - checkout
@@ -32,8 +30,6 @@ jobs:
 
   ci-image:
     <<: *defaults
-    environment:
-      <<: *environmentDefaults
     steps:
       - setup_remote_docker
       - checkout
@@ -45,8 +41,6 @@ jobs:
 
   health-image:
     <<: *defaults
-    environment:
-      <<: *environmentDefaults
     steps:
       - setup_remote_docker
       - checkout
