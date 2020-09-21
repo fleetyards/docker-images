@@ -11,7 +11,7 @@ defaults: &defaults
     - checkout
     - run: |
         docker info
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        echo $DOCKER_PASSWORD | docker login -username $DOCKER_USER --password-stdin
     - run: |
         cd ./$IMAGE_NAME
         docker build -t $IMAGE .
@@ -41,4 +41,6 @@ workflows:
     jobs:
       - base image
       - ci image
+          requires:
+            - base image
       - health image
