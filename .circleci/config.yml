@@ -10,12 +10,6 @@ defaults: &defaults
   docker:
     - image: cimg/base:2020.01
 
-defaultSteps: &defaultSteps
-  - setup_remote_docker
-  - checkout
-  - run: |
-      echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-
 jobs:
   base-image:
     <<: *defaults
@@ -23,7 +17,10 @@ jobs:
       <<: *environmentDefaults
       IMAGE_NAME: base
     steps:
-      <<: *defaultSteps
+      - setup_remote_docker
+      - checkout
+      - run: |
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run: |
           export IMAGE_TAG=$RUBY_VERSION
       - run: |
@@ -37,7 +34,10 @@ jobs:
       <<: *environmentDefaults
       IMAGE_NAME: ci
     steps:
-      <<: *defaultSteps
+      - setup_remote_docker
+      - checkout
+      - run: |
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run: |
           export IMAGE_TAG=$RUBY_VERSION
       - run: |
@@ -52,7 +52,10 @@ jobs:
       IMAGE_TAG: latest
       IMAGE_NAME: health
     steps:
-      <<: *defaultSteps
+      - setup_remote_docker
+      - checkout
+      - run: |
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run: |
           cd ./$IMAGE_NAME
           docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
