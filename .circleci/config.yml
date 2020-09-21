@@ -10,8 +10,8 @@ defaults: &defaults
   steps:
     - checkout
     - run: |
-      docker info
-      docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        docker info
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - run: |
         cd ./$IMAGE_NAME
         docker build -t $IMAGE .
