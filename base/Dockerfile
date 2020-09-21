@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /tmp/* /var/lib/apt/lists/*
 
 ## install yarn
-RUN curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
+RUN curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION \
+    && export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 ## install bundler
 RUN gem update --system
