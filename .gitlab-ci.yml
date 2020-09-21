@@ -28,15 +28,17 @@ before_script:
 
 base image:
   extends: .docker_build_template
+  before_script:
+    - export IMAGE_TAG=$RUBY_VERSION
   variables:
-    IMAGE_TAG: $RUBY_VERSION
     IMAGE_NAME: base
 
 ci image:
   extends: .docker_build_template
   stage: build
+  before_script:
+    - export IMAGE_TAG=$RUBY_VERSION
   variables:
-    IMAGE_TAG: $RUBY_VERSION
     IMAGE_NAME: ci
   dependencies:
     - base image
