@@ -40,7 +40,7 @@ workflows:
   build_and_push:
     jobs:
       - base image
-      - ci image
+      - ci image:
         requires:
           - base image
       - health image
