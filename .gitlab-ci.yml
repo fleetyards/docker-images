@@ -1,0 +1,45 @@
+image: docker:latest
+
+services:
+  - docker:18-dind
+
+stages:
+  - build
+
+.docker_build_template:
+  stage: build
+  script:
+    - cd $IMAGE_NAME
+    - docker build -t $IMAGE .
+    - docker push $IMAGE
+
+variables:
+  DOCKER_DRIVER: overlay2
+  RUBY_VERSION: 2.7.1
+  BUNDLER_VERSION: 2.1.4
+  YARN_VERSION: 1.22.5
+  PROJECT_NAME: fleetyards
+  IMAGE: $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
+
+before_script:
+  - docker info
+  - echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+
+base image:
+  extends: .docker_build_template
+  variables:
+    IMAGE_TAG: $RUBY_VERSION
+    IMAGE_NAME: base
+
+ci image:
+  extends: .docker_build_template
+  variables:
+    IMAGE_TAG: $RUBY_VERSION
+    IMAGE_NAME: ci
+
+health image:
+  extends: .docker_build_template
+  variables:
+    IMAGE_TAG: latest
+    IMAGE_NAME: health
+
