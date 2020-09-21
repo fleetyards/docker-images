@@ -23,7 +23,7 @@ variables:
 
 before_script:
   - docker info
-  - echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+  - docker login --username $DOCKER_USER --password $DOCKER_PASS
 
 base image:
   extends: .docker_build_template
@@ -36,6 +36,9 @@ ci image:
   variables:
     IMAGE_TAG: $RUBY_VERSION
     IMAGE_NAME: ci
+  dependencies:
+    - base image
+
 
 health image:
   extends: .docker_build_template
