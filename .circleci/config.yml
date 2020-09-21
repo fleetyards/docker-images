@@ -6,7 +6,6 @@ defaults: &defaults
   environment:
     RUBY_VERSION: 2.7.1
     BUNDLER_VERSION: 2.1.4
-    YARN_VERSION: 1.22.5
     PROJECT_NAME: fleetyards
 
 aliases:
