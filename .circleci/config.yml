@@ -12,7 +12,7 @@ defaults: &defaults
     - setup_remote_docker
     - checkout
     - run: |
-        echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USER --password-stdin
+        echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
     - run: |
         cd ./$IMAGE_NAME
         docker build -t $IMAGE .
