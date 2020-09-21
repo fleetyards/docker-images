@@ -27,8 +27,8 @@ jobs:
       <<: *environmentDefaults
       IMAGE_NAME: base
     steps:
-      run: |
-        export IMAGE_TAG=$RUBY_VERSION
+      - run: |
+          export IMAGE_TAG=$RUBY_VERSION
       <<: *defaultSteps
 
   ci-image:
@@ -37,8 +37,8 @@ jobs:
       <<: *environmentDefaults
       IMAGE_NAME: ci
     steps:
-      run: |
-        export IMAGE_TAG=$RUBY_VERSION
+      - run: |
+          export IMAGE_TAG=$RUBY_VERSION
       <<: *defaultSteps
 
   health-image:
