@@ -1,26 +1,18 @@
 version: 2.1
 
-environmentDefaults: &environmentDefaults
-  RUBY_VERSION: 2.7.1
-  BUNDLER_VERSION: 2.1.4
-  YARN_VERSION: 1.22.5
-  PROJECT_NAME: fleetyards
-
 defaults: &defaults
   docker:
     - image: cimg/base:2020.01
+  environment:
+    RUBY_VERSION: 2.7.1
+    BUNDLER_VERSION: 2.1.4
+    YARN_VERSION: 1.22.5
+    PROJECT_NAME: fleetyards
 
 aliases:
   - &docker_login
       run: |
         echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-  - &set_image_tag_for_ruby_version
-      run: |
-        echo "export IMAGE_TAG=$RUBY_VERSION" >> $BASH_ENV
-  - &docker_build
-      run: |
-        cd ./$IMAGE_NAME
-        docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG --build-arg RUBY_VERSION --build-arg BUNDLER_VERSION --build-arg YARN_VERSION .
   - &docker_push
       run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
 
@@ -29,39 +21,39 @@ jobs:
     <<: *defaults
     environment:
       <<: *environmentDefaults
-      IMAGE_NAME: base
     steps:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - *set_image_tag_for_ruby_version
-      - *docker_build
+      - run: |
+          cd base
+          docker build -t $PROJECT_NAME/base:$RUBY_VERSION --build-arg RUBY_VERSION .
       - *docker_push
 
   ci-image:
     <<: *defaults
     environment:
       <<: *environmentDefaults
-      IMAGE_NAME: ci
     steps:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - *set_image_tag_for_ruby_version
-      - *docker_build
+      - run: |
+          cd ci
+          docker build -t $PROJECT_NAME/ci:$RUBY_VERSION --build-arg RUBY_VERSION --build-arg BUNDLER_VERSION --build-arg YARN_VERSION .
       - *docker_push
 
   health-image:
     <<: *defaults
     environment:
       <<: *environmentDefaults
-      IMAGE_TAG: latest
-      IMAGE_NAME: health
     steps:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - *docker_build
+      - run: |
+          cd health
+          docker build -t $PROJECT_NAME/health:latest .
       - *docker_push
 
 workflows:
