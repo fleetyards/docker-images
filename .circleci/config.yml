@@ -9,30 +9,37 @@ environmentDefaults: &environmentDefaults
 defaults: &defaults
   docker:
     - image: cimg/base:2020.01
-  steps:
-    - setup_remote_docker
-    - checkout
-    - run: |
-        echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-    - run: |
-        cd ./$IMAGE_NAME
-        docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
-    - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
+
+defaultSteps: &defaultSteps
+  - setup_remote_docker
+  - checkout
+  - run: |
+      echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+  - run: |
+      cd ./$IMAGE_NAME
+      docker build -t $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG .
+  - run: docker push $PROJECT_NAME/$IMAGE_NAME:$IMAGE_TAG
 
 jobs:
   base-image:
     <<: *defaults
     environment:
       <<: *environmentDefaults
-      IMAGE_TAG: $RUBY_VERSION
       IMAGE_NAME: base
+    steps:
+      run: |
+        export IMAGE_TAG=$RUBY_VERSION
+      <<: *defaultSteps
 
   ci-image:
     <<: *defaults
     environment:
       <<: *environmentDefaults
-      IMAGE_TAG: $RUBY_VERSION
       IMAGE_NAME: ci
+    steps:
+      run: |
+        export IMAGE_TAG=$RUBY_VERSION
+      <<: *defaultSteps
 
   health-image:
     <<: *defaults
@@ -40,6 +47,8 @@ jobs:
       <<: *environmentDefaults
       IMAGE_TAG: latest
       IMAGE_NAME: health
+    steps:
+      <<: *defaultSteps
 
 workflows:
   version: 2
