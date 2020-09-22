@@ -5,6 +5,7 @@ defaults: &defaults
     - image: cimg/base:2020.01
   environment:
     RUBY_VERSION: 2.7.1
+    NPM_VERSION: 6.9.0
     BUNDLER_VERSION: 2.1.4
     PROJECT_NAME: fleetyards
 
@@ -14,32 +15,35 @@ aliases:
         echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
 
 jobs:
-  base-image:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - checkout
-      - *docker_login
-      - run: |
-          cd base
-          docker build -t $PROJECT_NAME/base:$RUBY_VERSION --build-arg RUBY_VERSION --build-arg BUNDLER_VERSION --build-arg YARN_VERSION .
-      - run: docker push $PROJECT_NAME/base:$RUBY_VERSION
-
   ci-image:
     <<: *defaults
     steps:
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - checkout
       - *docker_login
       - run: |
           cd ci
-          docker build -t $PROJECT_NAME/ci:$RUBY_VERSION --build-arg RUBY_VERSION .
+          docker build -t $PROJECT_NAME/ci:$RUBY_VERSION --target ci --build-arg RUBY_VERSION --build-arg BUNDLER_VERSION --build-arg NPM_VERSION .
       - run: docker push $PROJECT_NAME/ci:$RUBY_VERSION
+
+  e2e-image:
+    <<: *defaults
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - checkout
+      - *docker_login
+      - run: |
+          cd ci
+          docker build -t $PROJECT_NAME/e2e:$RUBY_VERSION --target e2e --build-arg RUBY_VERSION --build-arg BUNDLER_VERSION --build-arg NPM_VERSION .
+      - run: docker push $PROJECT_NAME/e2e:$RUBY_VERSION
 
   health-image:
     <<: *defaults
     steps:
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - checkout
       - *docker_login
       - run: |
@@ -51,8 +55,6 @@ workflows:
   version: 2
   main:
     jobs:
-      - base-image
-      - ci-image:
-          requires:
-            - base-image
+      - ci-image
+      - e2e-image
       - health-image
