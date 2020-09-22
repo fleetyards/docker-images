@@ -18,8 +18,7 @@ jobs:
   ci-image:
     <<: *defaults
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - checkout
       - *docker_login
       - run: |
@@ -30,8 +29,7 @@ jobs:
   e2e-image:
     <<: *defaults
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - checkout
       - *docker_login
       - run: |
@@ -42,8 +40,7 @@ jobs:
   health-image:
     <<: *defaults
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - checkout
       - *docker_login
       - run: |
