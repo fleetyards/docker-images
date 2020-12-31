@@ -2,7 +2,6 @@ ARG RUBY_VERSION
 
 FROM ruby:$RUBY_VERSION as ci
 
-ARG NPM_VERSION
 ARG BUNDLER_VERSION
 
 RUN curl https://deb.nodesource.com/setup_current.x | bash - \
@@ -17,8 +16,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb bzip2 libssl-dev unzip \
     && apt-get clean \
     && rm -rf /tmp/* /var/lib/apt/lists/*
-
-RUN npm install -g npm@$NPM_VERSION
 
 ## install bundler
 RUN gem update --system
