@@ -4,8 +4,8 @@ defaults: &defaults
   docker:
     - image: cimg/base:2020.01
   environment:
-    RUBY_VERSION: 3.0.0
-    BUNDLER_VERSION: 2.2.3
+    RUBY_VERSION: 3.0.1
+    BUNDLER_VERSION: 2.2.16
     PROJECT_NAME: fleetyards
 
 aliases:
