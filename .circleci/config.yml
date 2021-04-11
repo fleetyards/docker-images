@@ -23,7 +23,7 @@ jobs:
       - *docker_login
       - run: |
           cd ci
-          docker build -t $PROJECT_NAME/ci:$RUBY_VERSION --target ci --build-arg RUBY_VERSION --build-arg BUNDLER_VERSION --build-arg NPM_VERSION .
+          docker build -t $PROJECT_NAME/ci:$RUBY_VERSION --build-arg RUBY_VERSION --build-arg NODE_VERSION --build-arg BUNDLER_VERSION --build-arg NPM_VERSION .
       - run: docker push $PROJECT_NAME/ci:$RUBY_VERSION
 
   e2e-image:
@@ -34,7 +34,7 @@ jobs:
       - *docker_login
       - run: |
           cd ci
-          docker build -t $PROJECT_NAME/e2e:$RUBY_VERSION --target e2e --build-arg RUBY_VERSION --build-arg BUNDLER_VERSION --build-arg NPM_VERSION .
+          docker build -t $PROJECT_NAME/e2e:$RUBY_VERSION --build-arg RUBY_VERSION --build-arg NODE_VERSION --build-arg BUNDLER_VERSION --build-arg NPM_VERSION .
       - run: docker push $PROJECT_NAME/e2e:$RUBY_VERSION
 
   health-image:

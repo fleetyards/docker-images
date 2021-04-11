@@ -10,7 +10,7 @@ RUN curl https://deb.nodesource.com/setup_current.x | bash - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
 RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -\
-    && echo "deb https://deb.nodesource.com/node_$NODE_VERSION.x focal main" | tee /etc/apt/sources.list.d/node.list
+    && echo "deb https://deb.nodesource.com/node_${NODE_VERSION}.x focal main" | tee /etc/apt/sources.list.d/node.list
 
 ## install main deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
