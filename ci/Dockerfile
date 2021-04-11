@@ -10,7 +10,7 @@ RUN curl https://deb.nodesource.com/setup_current.x | bash - \
 
 ## install main deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nodejs yarn gcc g++ make rsync patch postgresql-client python-psycopg2 \
+    nodejs=14* yarn gcc g++ make rsync patch postgresql-client python-psycopg2 \
     build-essential cmake imagemagick openssl libreadline6-dev zlib1g zlib1g-dev libssl-dev \
     libyaml-dev libpq-dev libxml2-dev libxslt-dev libc6-dev libicu-dev libqtwebkit-dev qt4-qmake \
     xvfb bzip2 libssl-dev unzip shared-mime-info \
