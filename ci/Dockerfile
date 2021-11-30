@@ -16,7 +16,7 @@ RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nodejs=$NODE_VERSION* yarn gcc g++ make rsync patch postgresql-client \
     build-essential cmake imagemagick openssl libreadline6-dev zlib1g zlib1g-dev libssl-dev \
-    libyaml-dev libpq-dev libxml2-dev libxslt-dev libc6-dev libicu-dev libqtwebkit-dev qt4-qmake \
+    libyaml-dev libpq-dev libxml2-dev libxslt-dev libc6-dev libicu-dev \
     xvfb bzip2 libssl-dev unzip shared-mime-info \
     && apt-get clean \
     && rm -rf /tmp/* /var/lib/apt/lists/*
