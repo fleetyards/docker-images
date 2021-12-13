@@ -1,23 +1,26 @@
 ARG RUBY_VERSION
 
-FROM ruby:$RUBY_VERSION as ci
+FROM ruby:$RUBY_VERSION-slim as ci
 
 ARG NODE_VERSION
 ARG BUNDLER_VERSION
 
-RUN curl https://deb.nodesource.com/setup_current.x | bash - \
-    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
-RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -\
-    && echo "deb https://deb.nodesource.com/node_${NODE_VERSION}.x focal main" | tee /etc/apt/sources.list.d/node.list
-
-## install main deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nodejs=$NODE_VERSION* yarn gcc g++ make rsync patch postgresql-client \
+    gnupg2 curl gcc g++ make rsync patch postgresql-client \
     build-essential cmake imagemagick openssl libreadline6-dev zlib1g zlib1g-dev libssl-dev \
     libyaml-dev libpq-dev libxml2-dev libxslt-dev libc6-dev libicu-dev \
     xvfb bzip2 libssl-dev unzip shared-mime-info \
+    && apt-get clean \
+    && rm -rf /tmp/* /var/lib/apt/lists/*
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
+
+# install main deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nodejs=$NODE_VERSION* \
     && apt-get clean \
     && rm -rf /tmp/* /var/lib/apt/lists/*
 

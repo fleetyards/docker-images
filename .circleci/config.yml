@@ -5,7 +5,7 @@ defaults: &defaults
     - image: cimg/base:2020.01
   environment:
     RUBY_VERSION: 3.0.3
-    NODE_VERSION: 14
+    NODE_VERSION: 16
     BUNDLER_VERSION: 2.2.32
     PROJECT_NAME: fleetyards
 
@@ -13,6 +13,8 @@ aliases:
   - &docker_login
       run: |
         echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+  - &setup_thor
+      run: gem install thor
 
 jobs:
   ci-image:
@@ -21,10 +23,7 @@ jobs:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - run: |
-          cd ci
-          docker build -t $PROJECT_NAME/ci:$RUBY_VERSION --build-arg RUBY_VERSION --build-arg NODE_VERSION --build-arg BUNDLER_VERSION --build-arg NPM_VERSION .
-      - run: docker push $PROJECT_NAME/ci:$RUBY_VERSION
+      - run: thor docker:build ci
 
   e2e-image:
     <<: *defaults
@@ -32,10 +31,7 @@ jobs:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - run: |
-          cd ci
-          docker build -t $PROJECT_NAME/e2e:$RUBY_VERSION --build-arg RUBY_VERSION --build-arg NODE_VERSION --build-arg BUNDLER_VERSION --build-arg NPM_VERSION .
-      - run: docker push $PROJECT_NAME/e2e:$RUBY_VERSION
+      - run: thor docker:build ci e2e
 
   health-image:
     <<: *defaults
@@ -43,10 +39,7 @@ jobs:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - run: |
-          cd health
-          docker build -t $PROJECT_NAME/health:latest .
-      - run: docker push $PROJECT_NAME/health:latest
+      - run: thor docker:build health health latest
 
 workflows:
   version: 2
