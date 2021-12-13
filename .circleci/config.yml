@@ -23,7 +23,8 @@ jobs:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - run: thor docker:build ci
+      - *setup_thor
+      - run: thor docker:build ci -p
 
   e2e-image:
     <<: *defaults
@@ -31,7 +32,8 @@ jobs:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - run: thor docker:build ci e2e
+      - *setup_thor
+      - run: thor docker:build ci e2e -p
 
   health-image:
     <<: *defaults
@@ -39,7 +41,8 @@ jobs:
       - setup_remote_docker
       - checkout
       - *docker_login
-      - run: thor docker:build health health latest
+      - *setup_thor
+      - run: thor docker:build health health latest -p
 
 workflows:
   version: 2
