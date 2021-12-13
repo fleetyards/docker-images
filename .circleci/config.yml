@@ -14,7 +14,9 @@ aliases:
       run: |
         echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
   - &setup_thor
-      run: gem install thor
+      run: |
+        apt-get install ruby
+        gem install thor
 
 jobs:
   ci-image:
